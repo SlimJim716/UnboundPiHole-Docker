@@ -43,8 +43,8 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-     - <path to config folder>/unboundpihole/:/etc/pihole/
-     - <path to config folder>/unboundpihole/dnsmasq.d/:/etc/dnsmasq.d/
+     - <path/to/config/folder>/unboundpihole/:/etc/pihole/
+     - <path/to/config/folder>/unboundpihole/dnsmasq.d/:/etc/dnsmasq.d/
     networks:
      pihole_net:
        ipv4_address: 172.25.0.3
