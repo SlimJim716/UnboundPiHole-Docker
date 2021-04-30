@@ -1,0 +1,50 @@
+version: "3.7"
+
+networks:
+  pihole_net:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.25.0.0/24
+
+services:
+
+  unbound:
+     container_name: unbound
+     image: mvance/unbound:latest
+     restart: unless-stopped
+     ports:
+       - 53:53/tcp
+       - 53:53/udp
+     networks:
+      pihole_net:
+        ipv4_address: 172.25.0.2
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    dns: 127.0.0.1
+    restart: unless-stopped
+    links:
+      - unbound
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
+      - 8087:80/tcp
+    environment:
+      ServerIP: <your ip here>
+      DNS1: 172.25.0.2#53
+      DNS2: "no"
+      IPv6: "no"
+      TZ: America/New_York
+      WEBPASSWORD: 'changeme'
+      PROXY_LOCATION: pihole
+    cap_add:
+      - NET_ADMIN
+    volumes:
+     - <path to config folder>/unboundpihole/:/etc/pihole/
+     - <path to config folder>/unboundpihole/dnsmasq.d/:/etc/dnsmasq.d/
+    networks:
+     pihole_net:
+       ipv4_address: 172.25.0.3
